@@ -9,7 +9,8 @@ const {
     Events,
     SlashCommandBuilder,
     REST,
-    Routes
+    Routes,
+    EmbedBuilder
 } = require('discord.js');
 
 const client = new Client({
@@ -60,6 +61,13 @@ client.on(Events.InteractionCreate, async interaction => {
 
         if (interaction.commandName === 'role') {
 
+            const embed = new EmbedBuilder()
+                .setColor("#5865F2")
+                .setTitle("Get RolebyFii")
+                .setDescription("Klik tombol di bawah untuk memilih **role gender** kamu.")
+                .setThumbnail("https://i.ibb.co.com/sJgL5vwR/static.png") // Ganti dengan URL gambarmu
+                .setFooter({ text: "AfkVoicebyFii Role Panel" });
+
             const row = new ActionRowBuilder().addComponents(
 
                 new ButtonBuilder()
@@ -75,7 +83,7 @@ client.on(Events.InteractionCreate, async interaction => {
             );
 
             await interaction.reply({
-                content: 'Silakan pilih role kamu:',
+                embeds: [embed],
                 components: [row]
             });
 
