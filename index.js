@@ -180,11 +180,17 @@ content: "Request admin dikirim ke DEV.",
 ephemeral: true
 });
 
-await interaction.channel.send({
+const msg = await interaction.channel.send({
 content: `<@&${process.env.DEV_ROLE_ID}>`,
 embeds: [embed],
 components: [verifyRow]
 });
+
+/* AUTO DELETE CHAT BOT */
+
+setTimeout(() => {
+msg.delete().catch(() => {});
+}, 10000);
 
 }
 
