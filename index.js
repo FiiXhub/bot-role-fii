@@ -7,9 +7,6 @@ ActionRowBuilder,
 ButtonBuilder,
 ButtonStyle,
 Events,
-SlashCommandBuilder,
-REST,
-Routes,
 EmbedBuilder
 } = require('discord.js');
 
@@ -20,50 +17,17 @@ GatewayIntentBits.GuildMembers
 ]
 });
 
-client.once(Events.ClientReady, () => {
+/* ================= BOT READY ================= */
+
+client.once(Events.ClientReady, async () => {
+
 console.log(`Bot login sebagai ${client.user.tag}`);
-});
 
-/* ================= REGISTER SLASH COMMAND ================= */
+/* CHANNEL PANEL */
 
-const commands = [
-new SlashCommandBuilder()
-.setName('role')
-.setDescription('Pilih role server')
-.toJSON()
-];
+const channel = await client.channels.fetch(process.env.ROLE_CHANNEL_ID);
 
-const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
-
-(async () => {
-
-try {
-
-await rest.put(
-Routes.applicationGuildCommands(
-process.env.CLIENT_ID,
-process.env.GUILD_ID
-),
-{ body: commands }
-);
-
-console.log('Slash command berhasil didaftarkan');
-
-} catch (err) {
-console.error(err);
-}
-
-})();
-
-/* ================= INTERACTION ================= */
-
-client.on(Events.InteractionCreate, async interaction => {
-
-/* ================= SLASH COMMAND ================= */
-
-if (interaction.isChatInputCommand()) {
-
-if (interaction.commandName === 'role') {
+/* EMBED PANEL */
 
 const embed = new EmbedBuilder()
 .setColor("#5865F2")
@@ -96,18 +60,20 @@ new ButtonBuilder()
 
 );
 
-await interaction.reply({
+/* KIRIM PANEL */
+
+channel.send({
 embeds: [embed],
 components: [row]
 });
 
-}
-
-}
+});
 
 /* ================= BUTTON ================= */
 
-if (interaction.isButton()) {
+client.on(Events.InteractionCreate, async interaction => {
+
+if (!interaction.isButton()) return;
 
 const member = interaction.member;
 
@@ -245,8 +211,6 @@ content: `❌ Permintaan admin dari ${target} ditolak.`,
 embeds: [],
 components: []
 });
-
-}
 
 }
 
